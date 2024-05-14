@@ -1,0 +1,43 @@
+import os
+import shutil
+
+def organize_files(source_dir, destination_dir):
+    # Create a dictionary to map file extensions to their respective directories
+    file_types = {
+        'images': ['.jpg', '.jpeg', '.png', '.gif'],
+        'videos': ['.mp4', '.avi', '.mkv'],
+        'documents': ['.pdf', '.doc', '.docx', '.txt', '.xls', '.xlsx', '.ppt', '.pptx'],
+        'others': []  # Default directory for other file types
+    }
+
+    # Create destination directories if they don't exist
+    for directory in file_types.keys():
+        directory_path = os.path.join(destination_dir, directory)
+        os.makedirs(directory_path, exist_ok=True)
+
+    # Iterate over files in the source directory
+    for filename in os.listdir(source_dir):
+        source_file_path = os.path.join(source_dir, filename)
+
+        # Skip directories
+        if os.path.isdir(source_file_path):
+            continue
+
+        # Determine the file type based on its extension
+        file_type = 'others'
+        for category, extensions in file_types.items():
+            if any(filename.lower().endswith(ext) for ext in extensions):
+                file_type = category
+                break
+
+        # Move the file to its respective directory
+        destination_file_path = os.path.join(destination_dir, file_type, filename)
+        shutil.move(source_file_path, destination_file_path)
+        print(f"Moved '{filename}' to '{file_type}' directory")
+
+# Example usage
+if __name__ == "__main__":
+    source_directory = r'C:\YT'  # Replace with the path to your source directory
+    destination_directory = r'C:\new destination'  # Replace with the path to your destination directory
+
+    organize_files(source_directory, destination_directory)
